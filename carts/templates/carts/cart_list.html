@@ -1,0 +1,11 @@
+{% extends "inventory/base.html" %}
+{% block content %}
+    <a class="btn btn-outline-info" href=#>Create New Pre-Order</a>
+    {% for vendor in vendors %}
+        <article class="media content-section">
+          <div class="media-body">
+            <h2><a class="article-title" href="{% url 'cart-form' vendor.pk %}">Pred-Order for Vendor: {{ vendor.name }}</a></h2>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}

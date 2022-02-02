@@ -1,0 +1,21 @@
+{% extends "inventory/base.html" %}
+{% block content %}
+        <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Vendor</th>
+            <th scope="col">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+        <tr>
+            <th scope="row"><a href="{% url 'order-details' order.pk %}">{{ order.pk }}</a></th>
+            <td>{{ order.vendor.name }}</td>
+            <td>{{ order.date_created|date:"F d, Y" }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

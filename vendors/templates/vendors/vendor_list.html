@@ -1,0 +1,23 @@
+{% extends "inventory/base.html" %}
+{% block content %}
+    <a class="btn btn-outline-info" href={% url 'add-vendor' %}>Add New Vendor</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Phone</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for vendor in vendors %}
+        <tr>
+            <th scope="row"><a href="{% url 'view-vendor' vendor.pk %}">{{ vendor.pk }}</a></th>
+            <td>{{ vendor.name }}</td>
+            <td>{{ vendor.phone }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}

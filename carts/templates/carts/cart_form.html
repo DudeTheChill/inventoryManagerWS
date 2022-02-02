@@ -1,0 +1,50 @@
+{% extends "inventory/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+      <article class="media content-section">
+    <div class="media-body">
+      <h2 class="article-title">Pre-Order for: {{ vendor.name }}</h2>
+    </div>
+  </article>
+    {% if carts %}
+        <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product</th>
+            <th scope="col">Count</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+    {% for cart in carts %}
+        <tr>
+            <th scope="row">{{ cart.pk }}</th>
+            <td><a href="{% url 'view-inventory' cart.product.pk %}">{{ cart.product.name }}</a></td>
+            <td>{{ cart.count }}</td>
+            <td><a class="btn btn-outline-info" href={% url 'cart-delete' cart.pk %}>Delete This Item</a></td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+         <p>There are no items in this vendor's cart yet.</p>
+    {% endif %}
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Add New Item</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Add</button>
+            </div>
+        </form>
+    </div>
+    <a class="btn btn-outline-info", style="background: #D22B2B !important;" href={% url 'cart-delete-all' vendor.pk %}>Delete This Pre-Order</a>
+    <a class="btn btn-outline-info" href={% url 'create-order' vendor.pk %}>Finalize</a>
+{% endblock content %}

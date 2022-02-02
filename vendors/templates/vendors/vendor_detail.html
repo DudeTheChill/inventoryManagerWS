@@ -1,0 +1,32 @@
+{% extends "inventory/base.html" %}
+{% block content %}
+    <a class="btn btn-outline-info" href={% url 'cart-form' object.pk %}>Place Pre-Order For Vendor</a>
+  <article class="media content-section">
+    <div class="media-body">
+      <h2 class="article-title">Vendor Details</h2>
+      <p class="article-content">Name: {{ object.name }}</p>
+      <p class="article-content">Phone: {{ object.phone }}</p>
+    </div>
+  </article>
+    {% if orders %}
+    <h3>Orders:</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+        <tr>
+            <th scope="row"><a class="article-title" href="{% url 'order-details' order.pk %}">{{ order.pk }}</a></th>
+            <td>{{ order.date_created }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>This vendor has no orders yet.</p>
+    {% endif %}
+{% endblock content %}

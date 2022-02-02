@@ -1,0 +1,29 @@
+{% extends "inventory/base.html" %}
+{% block content %}
+    <a class="btn btn-outline-info" href={% url 'add-to-inventory-form' %}>Add New Product</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Stock</th>
+            <th scope="col">SP</th>
+            <th scope="col">CP</th>
+            <th scope="col">Vendor</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for stock in stocks %}
+        <tr>
+            <th scope="row"><a href="{% url 'view-inventory' stock.pk %}">{{ stock.pid }}</a></th>
+            <td>{{ stock.name }}</td>
+            <td>{{ stock.stock }}</td>
+            <td>{{ stock.sp }}</td>
+            <td>{{ stock.cp }}</td>
+            <td>{{ stock.vendor.name }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}

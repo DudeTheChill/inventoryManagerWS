@@ -1,0 +1,30 @@
+{% extends "inventory/base.html" %}
+{% block content %}
+  <article class="media content-section">
+    <div class="media-body">
+      <h2 class="article-title">#{{ object.pid }} - {{ object.name }}</h2>
+    </div>
+  </article>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Stock</th>
+            <th scope="col">SP</th>
+            <th scope="col">CP</th>
+            <th scope="col">Total SP</th>
+            <th scope="col">Total CP</th>
+            <th scope="col">Vendor</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ object.stock }}</td>
+            <td>{{ object.sp }}</td>
+            <td>{{ object.cp }}</td>
+            <td>{% widthratio object.sp 1 object.stock %}</td>
+            <td>{% widthratio object.cp 1 object.stock %}</td>
+            <td>{{ object.vendor.name }}</td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock content %}

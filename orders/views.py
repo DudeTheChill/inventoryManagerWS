@@ -1,3 +1,5 @@
+# views for order app are located in this file
+
 from django.shortcuts import render
 from carts.models import Cart
 from inventory.models import Inventory
@@ -9,8 +11,10 @@ import csv
 from django.http import HttpResponse
 
 
-
 def CreateOrder(vendor_id):
+    """ This function creates an order based on a vendor, it takes vendor_id as an input argument and returns the
+    created order object """
+
     carts = Cart.objects.filter(vendor__pk=vendor_id)
     vendor = Vendor.objects.get(pk=vendor_id)
     order = Order(vendor=vendor)
@@ -18,6 +22,7 @@ def CreateOrder(vendor_id):
     for cart in carts:
         new_item = OrderItem(order=order, product=cart.product, count=cart.count)
         product = Inventory.objects.get(pk=new_item.product.pk)
+        # check whether the counts are consistent
         if product.stock > new_item.count:
             product.stock = product.stock - new_item.count
             product.save()
@@ -25,12 +30,15 @@ def CreateOrder(vendor_id):
             product.count = 0
             product.save()
         new_item.save()
+    # deletes all the previous cart items (now ordr items)
     carts.delete()
     return order
 
 
 @login_required
 def OrderDetails(request, pk):
+    """ This function views order details and its items """
+
     order = Order.objects.get(pk=pk)
     items = OrderItem.objects.filter(order=order)
 
@@ -43,18 +51,26 @@ def OrderDetails(request, pk):
 
 @login_required
 def OrderList(request):
+    """ This functions views order list """
+
     orders = Order.objects.all()
     return render(request, 'orders/order_list.html', context={'orders': orders})
+
 
 @login_required
 def About(request):
     return render(request, 'orders/about.html')
+
+
 # while start_date <= end_date:
 #     orders = Order.objects.filter(date_created=start_date)
 #     start_date += delta
 
 @login_required
 def DownloadInvoice(request, pk):
+    """ This function takes primary key of an order as an input arguement and then prints its information in a .CSV
+    file for user to download """
+
     order = Order.objects.get(pk=pk)
     items = OrderItem.objects.filter(order__pk=pk)
     response = HttpResponse(

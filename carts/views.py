@@ -1,4 +1,5 @@
-from django.contrib.auth.decorators import login_required
+#views for cart app are located here
+
 from django.shortcuts import render, redirect
 from vendors.models import Vendor
 from .forms import NewCartForm
@@ -10,6 +11,8 @@ from django.contrib import messages
 
 @login_required
 def NewCart(request, vendor_id):
+    """ This function creates a new cart model based on a vendor id """
+
     vendor = Vendor.objects.get(pk=vendor_id)
     carts = Cart.objects.filter(vendor__pk=vendor_id)
     cart = Cart(vendor=vendor)
@@ -20,6 +23,7 @@ def NewCart(request, vendor_id):
         # check whether it's valid:
         if add_cart_form.is_valid():
             new_cart = add_cart_form.save(commit=False)
+            # check whether the amounts are valid:
             if new_cart.count > new_cart.product.stock:
                 messages.error(request, "count for " + new_cart.product.name + "must be lower than " + str(
                     new_cart.product.stock))
@@ -43,6 +47,8 @@ def NewCart(request, vendor_id):
 
 @login_required
 def DeleteAllCart(request, vendor_id):
+    """ This function is used to delete all cart items for a vendor """
+
     Cart.objects.filter(vendor__pk=vendor_id).delete()
     messages.success(request, "Pre-Order successfully deleted")
     return redirect('cart-list')
@@ -50,6 +56,8 @@ def DeleteAllCart(request, vendor_id):
 
 @login_required
 def DeleteCart(request, pk):
+    """ This function deletes a single item with argument pk """
+
     cart = Cart.objects.get(pk=pk)
     vendor = cart.vendor
     cart.delete()
@@ -59,6 +67,8 @@ def DeleteCart(request, pk):
 
 @login_required
 def CartList(request):
+    """ This function lists all the carts """
+
     vendor_ids = Cart.objects.all().values_list('vendor__id')
     vendors = Vendor.objects.filter(pk=vendor_ids)
     context = {
@@ -69,6 +79,8 @@ def CartList(request):
 
 @login_required
 def FinalizeCart(request, vendor_id):
+    """ This view is used to handle finalize url """
+
     order = order_views.CreateOrder(vendor_id)
     messages.success(request, "Order successfully created")
     return redirect('order-details', pk=order.pk)

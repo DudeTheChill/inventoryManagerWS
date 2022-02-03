@@ -9,7 +9,7 @@ import csv
 from django.http import HttpResponse
 
 
-@login_required
+
 def CreateOrder(vendor_id):
     carts = Cart.objects.filter(vendor__pk=vendor_id)
     vendor = Vendor.objects.get(pk=vendor_id)

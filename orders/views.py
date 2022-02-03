@@ -44,6 +44,9 @@ def OrderList(request):
     orders = Order.objects.all()
     return render(request, 'orders/order_list.html', context={'orders': orders})
 
+@login_required
+def About(request):
+    return render(request, 'orders/about.html')
 # while start_date <= end_date:
 #     orders = Order.objects.filter(date_created=start_date)
 #     start_date += delta

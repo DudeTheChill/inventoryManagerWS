@@ -5,6 +5,8 @@ from vendors.models import Vendor
 from .models import OrderItem, Order
 from datetime import date, timedelta
 from django.contrib.auth.decorators import login_required
+import csv
+from django.http import HttpResponse
 
 
 @login_required
@@ -50,3 +52,26 @@ def About(request):
 # while start_date <= end_date:
 #     orders = Order.objects.filter(date_created=start_date)
 #     start_date += delta
+
+@login_required
+def DownloadInvoice(request, pk):
+    order = Order.objects.get(pk=pk)
+    items = OrderItem.objects.filter(order__pk=pk)
+    response = HttpResponse(
+        content_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="invoice.csv"'},
+    )
+    totalSP = 0
+    totalCount = 0
+    writer = csv.writer(response)
+    writer.writerow(['Order Number', 'Vendor', 'Date'])
+    writer.writerow([str(order.pk), order.vendor.name, order.date_created.strftime("%m/%d/%Y")])
+    writer.writerow(['Items', '', ''])
+    writer.writerow(['Product Name', 'Count', 'Price'])
+    for item in items:
+        price = item.product.sp * item.count
+        totalSP = totalSP + price
+        totalCount = totalCount + item.count
+        writer.writerow([item.product.name, str(item.count), str(price)])
+    writer.writerow(['Total:', str(totalCount), str(totalSP)])
+    return response

@@ -1,5 +1,6 @@
 {% extends "inventory/base.html" %}
 {% block content %}
+    <a href="{% url 'download' order.pk %}">Download Invoice</a>
   <article class="media content-section">
     <div class="media-body">
       <h2 class="article-title">Order #{{ order.pk }}</h2>

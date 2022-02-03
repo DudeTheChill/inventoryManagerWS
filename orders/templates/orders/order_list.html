@@ -6,6 +6,7 @@
             <th scope="col">#</th>
             <th scope="col">Vendor</th>
             <th scope="col">Date</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -14,6 +15,7 @@
             <th scope="row"><a href="{% url 'order-details' order.pk %}">{{ order.pk }}</a></th>
             <td>{{ order.vendor.name }}</td>
             <td>{{ order.date_created|date:"F d, Y" }}</td>
+            <td><a href="{% url 'download' order.pk %}">Download Invoice</a></td>
         </tr>
         {% endfor %}
         </tbody>

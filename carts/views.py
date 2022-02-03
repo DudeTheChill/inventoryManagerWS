@@ -5,6 +5,7 @@ from .forms import NewCartForm
 from .models import Cart
 from orders import views as order_views
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 @login_required
@@ -20,9 +21,11 @@ def NewCart(request, vendor_id):
         if add_cart_form.is_valid():
             new_cart = add_cart_form.save(commit=False)
             if new_cart.count > new_cart.product.stock:
-                message = "count is more than stock"
+                messages.error(request, "count for " + new_cart.product.name + "must be lower than " + str(
+                    new_cart.product.stock))
             else:
                 new_cart.save()
+                messages.success(request, new_cart.product.name + "successfully added to cart")
             return redirect('cart-form', vendor_id=vendor_id)
 
         # if a GET (or any other method) we'll create a blank form
@@ -41,6 +44,7 @@ def NewCart(request, vendor_id):
 @login_required
 def DeleteAllCart(request, vendor_id):
     Cart.objects.filter(vendor__pk=vendor_id).delete()
+    messages.success(request, "Pre-Order successfully deleted")
     return redirect('cart-list')
 
 
@@ -49,6 +53,7 @@ def DeleteCart(request, pk):
     cart = Cart.objects.get(pk=pk)
     vendor = cart.vendor
     cart.delete()
+    messages.success(request, "item successfully deleted")
     return redirect('cart-form', vendor_id=vendor.pk)
 
 
@@ -65,4 +70,5 @@ def CartList(request):
 @login_required
 def FinalizeCart(request, vendor_id):
     order = order_views.CreateOrder(vendor_id)
+    messages.success(request, "Order successfully created")
     return redirect('order-details', pk=order.pk)
